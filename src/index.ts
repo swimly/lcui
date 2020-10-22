@@ -1,4 +1,2 @@
-import LCDate from './packages/date/index'
-export default{
-  LCDate
-}
+import './index.scss'
+export {default as LCDate} from './packages/date/index'

@@ -6,32 +6,49 @@ import resolve from 'rollup-plugin-node-resolve'
 import commonjs from 'rollup-plugin-commonjs'
 import { eslint } from 'rollup-plugin-eslint'
 import { DEFAULT_EXTENSIONS } from '@babel/core'
+import postcss from 'rollup-plugin-postcss'
+import cssnano from 'cssnano'
+import cssnext from 'postcss-cssnext'
+import serve from 'rollup-plugin-serve'
+import livereload from 'rollup-plugin-livereload'
+import {terser} from 'rollup-plugin-terser'
 
 import pkg from './package.json'
-
+const isProduction = process.env.env == 'dev'
+const plugins = isProduction ? [
+  serve(),
+  livereload()
+] : [
+  terser()
+]
 const paths = {
   input: path.join(__dirname, '/src/index.ts'),
-  output: path.join(__dirname, '/lib'),
+  output: isProduction ? path.join(__dirname, '/lib') : path.join(__dirname, `/dist/${pkg.version}`),
 }
-
 // rollup 配置项
 const rollupConfig: RollupOptions = {
   input: paths.input,
-  output: [
+  output: isProduction ? [
+    {
+      file: path.join(paths.output, `${pkg.name}.js`),
+      format: 'umd',
+      name: pkg.name,
+    }
+  ] : [
     // 输出 commonjs 规范的代码
     {
-      file: path.join(paths.output, 'index.js'),
+      file: path.join(paths.output, `${pkg.name}.${pkg.version}.cjs.js`),
       format: 'cjs',
       name: pkg.name,
     },
     // 输出 es 规范的代码
     {
-      file: path.join(paths.output, 'index.esm.js'),
+      file: path.join(paths.output, `${pkg.name}.${pkg.version}.es.js`),
       format: 'es',
       name: pkg.name,
     },
     {
-      file: path.join(paths.output, 'index.umd.js'),
+      file: path.join(paths.output, `${pkg.name}.${pkg.version}.umd.js`),
       format: 'umd',
       name: pkg.name,
     },
@@ -39,6 +56,10 @@ const rollupConfig: RollupOptions = {
   // external: ['lodash'], // 指出应将哪些模块视为外部模块，如 Peer dependencies 中的依赖
   // plugins 需要注意引用顺序
   plugins: [
+    postcss({
+      plugins: [cssnext, cssnano],
+      extract: isProduction ? path.resolve(__dirname, `./dist/${pkg.name}.css`) : path.resolve(__dirname, `./dist/${pkg.version}/${pkg.name}.min.css`)
+    }),
     // 验证导入的文件
     eslint({
       throwOnError: true, // lint 结果有错误将会抛出异常
@@ -68,6 +89,7 @@ const rollupConfig: RollupOptions = {
         '.ts',
       ],
     }),
+    ...plugins
   ],
 }
 

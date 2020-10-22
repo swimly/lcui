@@ -1,0 +1,51 @@
+{
+  "metadata": {
+    "toolPackage": "@microsoft/api-extractor",
+    "toolVersion": "7.10.4",
+    "schemaVersion": 1003,
+    "oldestForwardsCompatibleVersion": 1001
+  },
+  "kind": "Package",
+  "canonicalReference": "lc!",
+  "docComment": "",
+  "name": "lc",
+  "members": [
+    {
+      "kind": "EntryPoint",
+      "canonicalReference": "lc!",
+      "name": "",
+      "members": [
+        {
+          "kind": "Variable",
+          "canonicalReference": "lc!_default:var",
+          "docComment": "",
+          "excerptTokens": [
+            {
+              "kind": "Content",
+              "text": "_default: "
+            },
+            {
+              "kind": "Content",
+              "text": "{\n    LCDate: typeof "
+            },
+            {
+              "kind": "Reference",
+              "text": "LCDate",
+              "canonicalReference": "lc!default:class"
+            },
+            {
+              "kind": "Content",
+              "text": ";\n}"
+            }
+          ],
+          "releaseTag": "Public",
+          "name": "_default",
+          "variableTypeTokenRange": {
+            "startIndex": 1,
+            "endIndex": 4
+          }
+        }
+      ]
+    }
+  ]
+}

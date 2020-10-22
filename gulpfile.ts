@@ -27,13 +27,15 @@ const log = {
 const paths = {
   root: path.join(__dirname, '/'),
   lib: path.join(__dirname, '/lib'),
+  dist: path.join(__dirname, '/dist')
 }
 
 
 // 删除 lib 文件
 const clearLibFile: TaskFunc = async (cb) => {
   fse.removeSync(paths.lib)
-  log.progress('Deleted lib file')
+  fse.removeSync(paths.dist)
+  log.progress('开始删除lib目录')
   cb()
 }
 
@@ -53,7 +55,7 @@ const buildByRollup: TaskFunc = async (cb) => {
       await bundle.write(outOption)
     })
     cb()
-    log.progress('Rollup built successfully')
+    log.progress('Rollup打包成功！')
   }
 }
 
@@ -108,7 +110,7 @@ const complete: TaskFunc = (cb) => {
 // 2. rollup 打包
 // 3. api-extractor 生成统一的声明文件, 删除多余的声明文件
 // 4. 完成
-export const build = series(clearLibFile, buildByRollup, apiExtractorGenerate, complete)
+export const build = series(clearLibFile, buildByRollup, complete)
 
 // 自定义生成 changelog
 export const changelog: TaskFunc = async (cb) => {
