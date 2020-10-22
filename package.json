@@ -20,7 +20,7 @@
     "api": "api-extractor run",
     "test": "jest --coverage --verbose -u",
     "build": "cross-env env=prod gulp build",
-    "dev": "cross-env env=dev gulp build"
+    "dev": "cross-env env=dev rollup -w --config rollup.config.js"
   },
   "keywords": [],
   "author": "",

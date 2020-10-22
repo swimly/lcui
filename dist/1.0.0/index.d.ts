@@ -1,2 +1,5 @@
-import './index.scss';
-export { default as LCDate } from './packages/date/index';
+import LCDate from './packages/date/index';
+declare const _default: {
+    LCDate: typeof LCDate;
+};
+export default _default;

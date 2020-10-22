@@ -4,5 +4,6 @@ export default class LCDate {
   }
   static init ():void {
     console.log('init')
+    alert('8784545')
   }
 }

@@ -1,5 +1,4 @@
 import path from 'path'
-import { RollupOptions } from 'rollup'
 import rollupTypescript from 'rollup-plugin-typescript2'
 import babel from 'rollup-plugin-babel'
 import resolve from 'rollup-plugin-node-resolve'
@@ -26,7 +25,7 @@ const paths = {
   output: isProduction ? path.join(__dirname, '/lib') : path.join(__dirname, `/dist/${pkg.version}`),
 }
 // rollup 配置项
-const rollupConfig: RollupOptions = {
+const rollupConfig = {
   input: paths.input,
   output: isProduction ? [
     {
@@ -58,7 +57,7 @@ const rollupConfig: RollupOptions = {
   plugins: [
     postcss({
       plugins: [cssnext, cssnano],
-      extract: isProduction ? path.resolve(__dirname, `./dist/${pkg.name}.css`) : path.resolve(__dirname, `./dist/${pkg.version}/${pkg.name}.min.css`)
+      extract: isProduction ? path.resolve(__dirname, `./lib/${pkg.name}.css`) : path.resolve(__dirname, `./dist/${pkg.version}/${pkg.name}.min.css`)
     }),
     // 验证导入的文件
     eslint({
@@ -78,7 +77,10 @@ const rollupConfig: RollupOptions = {
         moduleDirectory: 'node_modules',
       },
     }),
-    rollupTypescript(),
+    rollupTypescript({
+      exclude: "node_modules/**",
+      typescript: require("typescript")
+    }),
     babel({
       runtimeHelpers: true,
       // 只转换源代码，不运行外部依赖
