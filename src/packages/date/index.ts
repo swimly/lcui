@@ -1,9 +1,8 @@
 export default class LCDate {
   constructor () {
-    console.log('new')
+    console.log('a')
   }
   static init ():void {
     console.log('init')
-    alert('8784545')
   }
 }

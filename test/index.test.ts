@@ -1,15 +1,15 @@
 // index.test.ts
 
 import assert from 'assert'  
-import myFirstFunc from '../src'
+import LCDate from '../src/packages/date/index'
 
-// describe('validate:', () => {  
-//   /**
-//    * myFirstFunc
-//    */
-//   describe('myFirstFunc', () => {
-//     test(' return hello rollup ', () => {
-//       assert.strictEqual(myFirstFunc('rollup'), 'hello rollup')
-//     })
-//   })
-// })
+describe('validate:', () => {  
+  /**
+   * myFirstFunc
+   */
+  describe('date', () => {
+    test(' return hello date ', () => {
+      
+    })
+  })
+})

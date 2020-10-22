@@ -1,8 +1,8 @@
-import { series } from 'gulp'
+import { series, watch } from 'gulp'
 import path from 'path'
 import fse from 'fs-extra'
 import chalk from 'chalk'
-import {rollup, watch} from 'rollup'
+import { rollup } from 'rollup'
 import {
   Extractor,
   ExtractorConfig,
@@ -33,15 +33,9 @@ const paths = {
 
 // 删除 lib 文件
 const clearLibFile: TaskFunc = async (cb) => {
-  fse.removeSync(paths.lib)
-  log.progress('开始删除lib目录')
-  cb()
-}
-
-// 删除 lib 文件
-const clearDistFile: TaskFunc = async (cb) => {
+  // fse.removeSync(paths.lib)
   fse.removeSync(paths.dist)
-  log.progress('开始删除dist目录')
+  log.progress('start delete dist folder!')
   cb()
 }
 
@@ -60,11 +54,18 @@ const buildByRollup: TaskFunc = async (cb) => {
     outOptions.forEach(async (outOption) => {
       await bundle.write(outOption)
     })
-    cb()
-    log.progress('Rollup打包成功！')
+    if (outOptions.length > 1) {
+      log.progress('bundle success')
+    } else {
+      log.progress('livereload success')
+    }
   }
 }
 
+// rollup开发
+const serveByRollup: TaskFunc = async (cb) => {
+  watch('./src/**', series(buildByRollup))
+}
 
 // api-extractor 整理 .d.ts 文件
 const apiExtractorGenerate: TaskFunc = async (cb) => {
@@ -112,7 +113,8 @@ const complete: TaskFunc = (cb) => {
 // 2. rollup 打包
 // 3. api-extractor 生成统一的声明文件, 删除多余的声明文件
 // 4. 完成
-export const build = series(clearDistFile, buildByRollup, complete)
+export const build = series(clearLibFile, buildByRollup, complete)
+export const dev = series(buildByRollup, serveByRollup)
 
 // 自定义生成 changelog
 export const changelog: TaskFunc = async (cb) => {

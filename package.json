@@ -2,7 +2,7 @@
   "name": "lc",
   "version": "1.0.0",
   "description": "",
-  "main": "lib/index.js",
+  "main": "lib/lc.js",
   "module": "lib/index.esm.js",
   "typings": "lib/index.d.js",
   "husky": {
@@ -17,10 +17,11 @@
     ]
   },
   "scripts": {
+    "changelog": "gulp changelog",
     "api": "api-extractor run",
     "test": "jest --coverage --verbose -u",
     "build": "cross-env env=prod gulp build",
-    "dev": "cross-env env=dev rollup -w --config rollup.config.js"
+    "dev": "cross-env env=dev gulp dev"
   },
   "keywords": [],
   "author": "",

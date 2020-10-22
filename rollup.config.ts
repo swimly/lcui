@@ -1,4 +1,5 @@
 import path from 'path'
+import { RollupOptions } from 'rollup'
 import rollupTypescript from 'rollup-plugin-typescript2'
 import babel from 'rollup-plugin-babel'
 import resolve from 'rollup-plugin-node-resolve'
@@ -15,9 +16,10 @@ import {terser} from 'rollup-plugin-terser'
 import pkg from './package.json'
 const isProduction = process.env.env == 'dev'
 const plugins = isProduction ? [
-  serve(),
-  livereload()
+  // serve(),
+  // livereload()
 ] : [
+  // 验证导入的文件
   terser()
 ]
 const paths = {
@@ -25,8 +27,12 @@ const paths = {
   output: isProduction ? path.join(__dirname, '/lib') : path.join(__dirname, `/dist/${pkg.version}`),
 }
 // rollup 配置项
-const rollupConfig = {
+const rollupConfig: RollupOptions = {
   input: paths.input,
+  watch: {
+    include: '/src/**/*.ts',
+    exclude: ['node_modules/**', 'lib/**', '*.js']
+  },
   output: isProduction ? [
     {
       file: path.join(paths.output, `${pkg.name}.js`),
@@ -56,17 +62,15 @@ const rollupConfig = {
   // plugins 需要注意引用顺序
   plugins: [
     postcss({
-      plugins: [cssnext, cssnano],
+      plugins: isProduction ? [cssnext] : [cssnext, cssnano],
       extract: isProduction ? path.resolve(__dirname, `./lib/${pkg.name}.css`) : path.resolve(__dirname, `./dist/${pkg.version}/${pkg.name}.min.css`)
     }),
-    // 验证导入的文件
     eslint({
       throwOnError: true, // lint 结果有错误将会抛出异常
       throwOnWarning: true,
       include: ['src/**/*.ts'],
       exclude: ['node_modules/**', 'lib/**', '*.js'],
     }),
-
     // 使得 rollup 支持 commonjs 规范，识别 commonjs 规范的依赖
     commonjs(),
 
@@ -77,10 +81,7 @@ const rollupConfig = {
         moduleDirectory: 'node_modules',
       },
     }),
-    rollupTypescript({
-      exclude: "node_modules/**",
-      typescript: require("typescript")
-    }),
+    rollupTypescript(),
     babel({
       runtimeHelpers: true,
       // 只转换源代码，不运行外部依赖
